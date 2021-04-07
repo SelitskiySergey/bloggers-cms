@@ -14,7 +14,7 @@ namespace Pds.Api.Logging.ExceptionCreators
         protected override Task<IActionResult> GetExceptionResultInternalAsync(Exception exception,
             IServiceProvider provider)
         {
-            return Task.FromResult<IActionResult>(new ObjectResult(new ExceptionResponse(exception))
+            return Task.FromResult<IActionResult>(new ObjectResult(new DetailInternalErrorResponse(exception))
             {
                 StatusCode = 500
             });

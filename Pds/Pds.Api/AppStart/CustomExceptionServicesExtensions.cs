@@ -9,11 +9,13 @@ namespace Pds.Api.AppStart
     {
         public static void AddCustomExceptionServices(this IServiceCollection services, IHostEnvironment environment)
         {
+            services.AddSingleton<IExceptionResponseCreator, ServiceExceptionResponseCreator>();
+            
             if (environment.IsDevelopment())
-                services.AddSingleton<ShowFullExceptionResponseCreator>();
+                services.AddSingleton<IExceptionResponseCreator, ShowFullExceptionResponseCreator>();
             else
-                services.AddSingleton<HideExceptionResponseCreator>();
-
+                services.AddSingleton<IExceptionResponseCreator, HideExceptionResponseCreator>();
+            
             services
                 .AddSingleton<IExceptionResponseCreatorsFactory,
                     ServiceProviderBasedExceptionResponseCreatorsFactory>();

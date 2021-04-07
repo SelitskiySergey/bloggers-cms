@@ -11,8 +11,7 @@ namespace Pds.Api.Logging.ExceptionCreators.ExceptionCreatorsFactories
 
         public ServiceProviderBasedExceptionResponseCreatorsFactory(IServiceProvider provider)
         {
-            creators = provider.GetServices(typeof(IExceptionResponseCreator)).Cast<IExceptionResponseCreator>()
-                .ToList();
+            creators = new List<IExceptionResponseCreator>(provider.GetServices<IExceptionResponseCreator>());
         }
 
         public IEnumerable<IExceptionResponseCreator> GetCreators()

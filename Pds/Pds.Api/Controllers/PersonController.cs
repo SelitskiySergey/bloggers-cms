@@ -14,7 +14,6 @@ using Pds.Services.Interfaces;
 namespace Pds.Api.Controllers
 {
     [Route("api/persons")]
-    [CustomAuthorize]
     public class PersonController : ApiControllerBase
     {
         private readonly ILogger<PersonController> logger;
@@ -43,8 +42,6 @@ namespace Pds.Api.Controllers
         [ProducesResponseType(typeof(GetPersonsResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll([FromQuery] GetPersonsRequest request)
         {
-            try
-            {
                 var persons = await personService.GetAllAsync();
 
                 var response = new GetPersonsResponse
@@ -54,11 +51,6 @@ namespace Pds.Api.Controllers
                 };
 
                 return Ok(response);
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
         }
 
         /// <summary>
@@ -68,10 +60,9 @@ namespace Pds.Api.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(CreatePersonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [AllowAnonymous]
         public async Task<IActionResult> Create(CreatePersonRequest request)
         {
-            try
-            {
                 if (ModelState.IsValid)
                 {
                     var newPerson = mapper.Map<Person>(request);
@@ -80,11 +71,6 @@ namespace Pds.Api.Controllers
                 }
 
                 return BadRequest();
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
         }
 
         /// <summary>
@@ -96,15 +82,8 @@ namespace Pds.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(Guid personId)
         {
-            try
-            {
                 await personService.DeleteAsync(personId);
                 return Ok();
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
         }
 
         /// <summary>
@@ -116,15 +95,8 @@ namespace Pds.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Archive(Guid personId)
         {
-            try
-            {
                 await personService.ArchiveAsync(personId);
                 return Ok();
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
         }
 
         /// <summary>
@@ -136,15 +108,8 @@ namespace Pds.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Unarchive(Guid personId)
         {
-            try
-            {
                 await personService.UnarchiveAsync(personId);
                 return Ok();
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
         }
 
         /// <summary>
@@ -154,17 +119,10 @@ namespace Pds.Api.Controllers
         [Route("get-brands")]
         public async Task<IActionResult> GetListOfBrands()
         {
-            try
-            {
                 var brands = await brandService.GetBrandsForListsAsync();
                 var response = mapper.Map<List<BrandForCheckboxesDto>>(brands);
 
                 return Ok(response);
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
         }
     }
 }

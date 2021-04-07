@@ -3,23 +3,17 @@ using System.Collections.Generic;
 
 namespace Pds.Core.Exceptions
 {
-    public class PersonCreationException : Exception
+    public class PersonCreationException : ServiceException
     {
-        public List<string> Errors;
-
-        public PersonCreationException(List<string> errors)
+        public PersonCreationException()
         {
-            Errors = errors;
         }
 
-        public PersonCreationException(string message)
-            : base(message)
+        public PersonCreationException(ServiceError singleError) : base(singleError)
         {
-            Errors = new List<string> { message };
         }
 
-        public PersonCreationException(string message, Exception inner)
-            : base(message, inner)
+        public PersonCreationException(IEnumerable<ServiceError> errors) : base(errors)
         {
         }
     }

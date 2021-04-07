@@ -5,7 +5,9 @@ using System.Linq;
 using AutoMapper;
 using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Content;
+using Pds.Api.Contracts.Exceptions;
 using Pds.Api.Contracts.Person;
+using Pds.Core.Exceptions;
 using Pds.Data.Entities;
 using Pds.Services.Models;
 using Pds.Services.Models.Content;
@@ -80,7 +82,8 @@ namespace Pds.Mappers
                             s.FullName = string.IsNullOrEmpty(p.FirstName) ? 
                                 "Не выбрано" : 
                                 $"{p.FirstName} {p.ThirdName} {p.LastName}"));
-            
+            CreateMap<ServiceException.ServiceError, ServiceErrorDto>();
+            CreateMap<ServiceException, ServiceErrorResponse>();
             #endregion
 
             #region Contracts to Entities
