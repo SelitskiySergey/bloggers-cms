@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Pds.Api.Logging.ExceptionCreators
@@ -12,26 +13,22 @@ namespace Pds.Api.Logging.ExceptionCreators
     {
         public Type TargetExceptionType { get; } = typeof(T);
 
-        public Task<IActionResult> GetExceptionResultAsync(Exception exception, IServiceProvider provider)
+        public Task<IActionResult> GetExceptionResultAsync(Exception exception, HttpContext context)
         {
             var type = exception.GetType();
             if (!type.IsSubclassOf(TargetExceptionType))
                 throw new ArgumentException("Invalid type of passed exception");
-            return GetExceptionResultInternalAsync((T) exception, provider);
+            return GetExceptionResultInternalAsync((T) exception, context);
         }
 
         /// <summary>
         ///     Typed version of <see cref="GetExceptionResultAsync" />
         /// </summary>
         /// <param name="exception">Exception of <see cref="TargetExceptionType" /> or subclass</param>
-        /// <param name="provider">
-        ///     ServiceProvider for resolving dependencies  (for example: for resolve
-        ///     <see cref="Microsoft.Extensions.Logging.ILogger" />)
-        /// </param>
+        /// <param name="context"></param>
         /// <returns>
         ///     <see cref="IActionResult" />
         /// </returns>
-        protected abstract Task<IActionResult> GetExceptionResultInternalAsync(T exception,
-            IServiceProvider provider);
+        protected abstract Task<IActionResult> GetExceptionResultInternalAsync(T exception, HttpContext context);
     }
 }

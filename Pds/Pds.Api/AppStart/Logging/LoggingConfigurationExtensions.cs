@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
+using NLog.Conditions;
 using NLog.Config;
 using NLog.Extensions.Logging;
 using NLog.Targets;
+using Pds.Api.Logging.NLogConditions;
 using Pds.Api.Logging.NLogTargets;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -40,14 +43,14 @@ namespace Pds.Api.AppStart.Logging
             configuration.GetSection(LoggingSectionName)
                 .Bind(loggingConfiguration);
             Target.Register<RepositoryLogTarget>(nameof(RepositoryLogTarget));
-
+            
             var logFactory = new LogFactory
             {
-                Configuration =
-                    new XmlLoggingConfiguration(loggingConfiguration.NLogConfig),
                 ThrowExceptions = true
             };
-
+            logFactory.Setup().SetupExtensions(s => s.RegisterConditionMethod("subclass",
+                typeof(ExceptionConditionMethods).GetMethod(nameof(ExceptionConditionMethods.IsSubclass))));
+            logFactory.Configuration = new XmlLoggingConfiguration(loggingConfiguration.NLogConfig);
             foreach (var serviceProviderDynamicLink in logFactory.Configuration.AllTargets
                 .OfType<IServiceProviderDynamicLink>()) serviceProviderDynamicLink.SetServiceProvider(provider);
 

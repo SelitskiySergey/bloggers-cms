@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 
 namespace Pds.Core.Exceptions
 {
@@ -10,53 +8,27 @@ namespace Pds.Core.Exceptions
     /// </summary>
     public class ServiceException : ApplicationException
     {
-        public ServiceException()
+        public ServiceException(string detail, int status) : this(nameof(ServiceException), detail, status)
         {
-            Errors = new List<ServiceError>(0);
+            Detail = detail;
+            Status = status;
         }
 
-        public ServiceException(ServiceError singleError)
+        public ServiceException(string title, string detail, int status = 500,
+            IDictionary<string, object> errors = null)
         {
-            Errors = new List<ServiceError>(0)
-            {
-                singleError
-            };
+            Title = title;
+            Detail = detail;
+            Status = status;
+            Errors = errors;
         }
 
-        public ServiceException(IEnumerable<ServiceError> errors)
-        {
-            Errors = errors as ICollection<ServiceError> ?? errors.ToList();
-        }
+        public string Title { get; }
 
-        public class ServiceError
-        {
-            public string Code { get; set; }
+        public string Detail { get; }
 
-            public object Value { get; set; }
+        public int Status { get; }
 
-            public ServiceError(object value)
-            {
-                Code = value.ToString();
-                Value = value;
-            }
-
-            public ServiceError(string code, object value)
-            {
-                Code = code;
-                Value = value;
-            }
-
-            public static implicit operator ServiceError (string value) => new ServiceError(value);
-
-            public static IEnumerable<ServiceError>
-                FromDictionary(IEnumerable<KeyValuePair<string, object>> dictionary) =>
-                dictionary.Select((pair) => new ServiceError(pair.Key, pair.Value));
-            
-            public static IEnumerable<ServiceError>
-                FromObjects(IEnumerable<object> dictionary) =>
-                dictionary.Select((obj) => new ServiceError(obj.ToString(), obj));
-        }
-        
-        public ICollection<ServiceError> Errors { get; set; }
+        public IDictionary<string, object> Errors { get; set; }
     }
 }

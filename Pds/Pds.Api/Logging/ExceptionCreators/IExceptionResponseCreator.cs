@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Pds.Api.Logging.ExceptionCreators
@@ -24,10 +25,10 @@ namespace Pds.Api.Logging.ExceptionCreators
         ///     ServiceProvider for resolving dependencies  (for example: for resolve
         ///     <see cref="Microsoft.Extensions.Logging.ILogger" />)
         /// </param>
+        /// <param name="context"></param>
         /// <returns>
         ///     <see cref="IActionResult" />
         /// </returns>
-        Task<IActionResult> GetExceptionResultAsync(Exception exception,
-            IServiceProvider provider);
+        Task<IActionResult> GetExceptionResultAsync(Exception exception, HttpContext context);
     }
 }

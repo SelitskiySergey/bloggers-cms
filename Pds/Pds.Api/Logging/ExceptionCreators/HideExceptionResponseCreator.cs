@@ -11,8 +11,7 @@ namespace Pds.Api.Logging.ExceptionCreators
     /// </summary>
     public class HideExceptionResponseCreator : ExceptionResponseCreator<Exception>
     {
-        protected override Task<IActionResult> GetExceptionResultInternalAsync(Exception exception,
-            IServiceProvider provider)
+        protected override Task<IActionResult> GetExceptionResultInternalAsync(Exception exception, HttpContext context)
         {
             return Task.FromResult<IActionResult>(new StatusCodeResult(StatusCodes.Status500InternalServerError));
         }
